@@ -1,16 +1,23 @@
 const express = require("express")
+const mongoose = require("mongoose")
+const { MONGOURI } = require("./keys")
+
 const app = express()
 const PORT = 5000
-const {MONGOURI} = require("./keys")
 
 
-mongoose.connect(MONGOURI)
-mongoose.connection.on("connection", () => {
-  console.log("connected successfuly")
-})
-mongoose.connection.on("error", (error) => {
-  console.log(`error connecting ${error}`)
-})
+mongoose
+  .connect(
+    MONGOURI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    }
+  )
+  .then(() => {
+    console.log("Database connected");
+  });
 
 
 app.listen(PORT, () => {
