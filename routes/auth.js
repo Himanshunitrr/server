@@ -8,9 +8,7 @@ const requireLogin = require("../middleware/requireLogin");
 
 const User = mongoose.model("User");
 
-router.get("/protected",requireLogin, (req, res) => {
-  res.send("hello");
-});
+
 router.post("/signup", (req, res) => {
   const { name, email, password } = req.body;
   if (!email || !password || !name) {

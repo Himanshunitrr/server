@@ -1,10 +1,12 @@
 const express = require("express")
+const app = express()
 const mongoose = require("mongoose")
 const { MONGOURI } = require("./keys")
 const User = require("./models/user")
+const Post = require("./models/post")
 const authRoutes = require("./routes/auth")
+const postRoutes = require("./routes/post")
 
-const app = express()
 const PORT = 5000
 
 mongoose
@@ -23,6 +25,7 @@ mongoose
   
 app.use(express.json());
 app.use(authRoutes);
+app.use(postRoutes);
 
 
 
