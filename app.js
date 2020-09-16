@@ -2,9 +2,13 @@ const express = require("express")
 const mongoose = require("mongoose")
 const { MONGOURI } = require("./keys")
 const User = require("./models/user")
+const authRoutes = require("./routes/auth")
 
 const app = express()
 const PORT = 5000
+
+app.use(express.json())
+app.use(authRoutes)
 
 
 mongoose
@@ -13,7 +17,7 @@ mongoose
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
+      useCreateIndex: true
     }
   )
   .then(() => {
