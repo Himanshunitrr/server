@@ -7,10 +7,6 @@ const authRoutes = require("./routes/auth")
 const app = express()
 const PORT = 5000
 
-app.use(express.json())
-app.use(authRoutes)
-
-
 mongoose
   .connect(
     MONGOURI,
@@ -23,6 +19,11 @@ mongoose
   .then(() => {
     console.log("Database connected");
   });
+
+  
+app.use(express.json());
+app.use(authRoutes);
+
 
 
 app.listen(PORT, () => {
