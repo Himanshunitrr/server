@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Schema.Types
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   body: {
     type: String,
@@ -11,12 +11,12 @@ const postSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
-    default: "no photo"
+    required: true,
   },
   postedBy: {
     type: ObjectId,
-    ref: "User"
-  }
-})
+    ref: "User",
+  },
+});
 
 module.exports = mongoose.model("Post",postSchema)
