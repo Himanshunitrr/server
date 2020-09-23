@@ -7,6 +7,7 @@ const Post = mongoose.model("Post");
 router.get("/allpost", requireLogin, (req, res) => {
   Post.find()
     .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name")
     .then((posts) => {
       res.json({ posts });
     })
@@ -55,12 +56,12 @@ router.put("/like", requireLogin, (req, res) => {
     // console.log(post.likes)
     if (post.likes.includes(req.user._id)) {
       // console.log("done")
-      return res.status(422).json({message: "You have already like it"})
+      return res.status(422).json({ message: "You have already like it" });
     } else if (error) {
-      return res.status(422).json({error: error})
+      return res.status(422).json({ error: error });
     } else {
       // console.log("push")
-      post.likes.push(req.user._id)
+      post.likes.push(req.user._id);
       Post.findByIdAndUpdate(
         req.body.postId,
         {
@@ -71,17 +72,14 @@ router.put("/like", requireLogin, (req, res) => {
         }
       ).exec((error, result) => {
         if (error) {
-          return res
-            .status(422)
-            .json({ error: error });
+          return res.status(422).json({ error: error });
         } else {
           // console.log(result)
           res.json(result);
         }
       });
     }
-  })
-  
+  });
 });
 router.put("/unlike", requireLogin, (req, res) => {
   Post.findByIdAndUpdate(
@@ -102,26 +100,29 @@ router.put("/unlike", requireLogin, (req, res) => {
 });
 
 router.put("/comment", requireLogin, (req, res) => {
+  // console.log(req.body)
   const comment = {
     text: req.body.text,
-    postedBy: req.user._id
-  }
+    postedBy: req.user._id,
+  };
   Post.findByIdAndUpdate(
     req.body.postId,
     {
-      $pull: { comments: comment},
+      $push: { comments: comment },
     },
     {
       new: true,
     }
-  ).populate("comments.postedBy", "_id name")
+  )
+    .populate("comments.postedBy", "_id name")
     .exec((error, result) => {
-    if (error) {
-      return res.status(422).json({ error: error });
-    } else {
-      res.json(result);
-    }
-  });
+      if (error) {
+        // console.log(error)
+        return res.status(422).json({ error: error });
+      } else {
+        res.json(result);
+      }
+    });
 });
 
 module.exports = router;
