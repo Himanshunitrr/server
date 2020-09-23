@@ -1,5 +1,5 @@
-if (process.env.NODE_ENV === "production") {
-  module.exports = require("./prod")
-} else {
-  module.exports = require("./dev")
-}
+module.exports = {
+  MONGOURI:
+    "mongodb+srv://himanshu:6egI8XtzjGUlmOif@cluster0.a1red.mongodb.net/<dbname>?retryWrites=true&w=majority",
+  JWT_SECRET: "DKJFdfieniea",
+};
