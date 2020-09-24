@@ -6,6 +6,7 @@ const User = require("./models/user")
 const Post = require("./models/post")
 const authRoutes = require("./routes/auth")
 const postRoutes = require("./routes/post")
+const userRoutes = require("./routes/user")
 
 const PORT =process.env.PORT || 5000
 
@@ -26,6 +27,7 @@ mongoose
 app.use(express.json());
 app.use(authRoutes);
 app.use(postRoutes);
+app.use(userRoutes);
 
 /* if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
