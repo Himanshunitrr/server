@@ -61,7 +61,7 @@ router.put("/like", requireLogin, (req, res) => {
       return res.status(422).json({ error: error });
     } else {
       // console.log("push")
-      post.likes.push(req.user._id);
+      // post.likes.push(req.user._id);
       Post.findByIdAndUpdate(
         req.body.postId,
         {
