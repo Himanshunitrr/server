@@ -30,6 +30,8 @@ router.put("/follow", requireLogin, (req, res) => {
       return res.status(422).json({ message: "You already following him/her" });
     } else if (error) {
       return res.status(422).json({ error: error });
+    } else if (req.body.followId == req.user._id) {
+      return res.status(422).json({ message: "You can't follow yourself" });
     } else {
       User.findByIdAndUpdate(
         req.body.followId,
@@ -39,45 +41,60 @@ router.put("/follow", requireLogin, (req, res) => {
         {
           new: true,
         }
-      ).select("-password")
+      )
+        .select("-password")
+        .exec((error, result) => {
+          if (error) {
+            return res.status(422).json({ error: error });
+          } else {
+            User.findByIdAndUpdate(req.user._id, {
+              $push: { following: req.body.followId },
+            }).exec((error, result) => {
+              if (error) {
+                return res.status(422).json({ error: error });
+              }
+            });
+            res.json(result);
+          }
+        });
+    }
+  });
+});
+router.put("/unfollow", requireLogin, (req, res) => {
+  // console.log("in unfollow route")
+  User.findById(req.body.followId, (error, toBeUnfollowedUser) => {
+    if (toBeUnfollowedUser.followers.includes(req.user._id)) {
+      User.findByIdAndUpdate(
+        req.body.followId,
+        {
+          $pull: { followers: req.user._id },
+        },
+        { 
+          new: true,
+        }
+      )
+      .select("-password")
       .exec((error, result) => {
         if (error) {
           return res.status(422).json({ error: error });
         } else {
+          User.findByIdAndUpdate(req.user._id, {
+            $pull: { following: req.body.followId },
+          }).exec((error, result) => {
+            if (error) {
+              return res.status(422).json({ error: error });
+            }
+          });
           res.json(result);
+          // console.log(result)
         }
       });
+    } else if (error) {
+      return res.status(422).json({ error: error });
+    } else if (req.body.followId == req.user._id) {
+      return res.status(422).json({ message: "You can'nt unfollow yourself" });
     }
   });
-});
-
-router.put("/unfollow", requireLogin, (req, res) => {
-  User.findByIdAndUpdate(req.body.unfollowId, {
-    $pull: { followers: req.user._id },
-  }),
-    {
-      new: true,
-    },
-    (error, result) => {
-      if (error) {
-        req.res.status(422).json({ error: error });
-      } else {
-        User.findByIdAndUpdate(
-          req.user._id,
-          {
-            $pull: { following: req.body.unfollowId },
-          },
-          { new: true }
-        )
-          .select("-password")
-          .then((result) => {
-            res.json(result);
-          })
-          .catch((error) => {
-            return res.status(422).json({ error: error });
-          });
-      }
-    };
 });
 
 module.exports = router;
