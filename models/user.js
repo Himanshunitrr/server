@@ -4,18 +4,23 @@ const {ObjectId} = mongoose.Schema.Types
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
-  followers: [{type: ObjectId, ref: "User"}],
-  following: [{type: ObjectId, ref: "User"}]
-})
+  pic: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/bakar/image/upload/v1601612450/iu_qxhtzi.jpg",
+  },
+  followers: [{ type: ObjectId, ref: "User" }],
+  following: [{ type: ObjectId, ref: "User" }],
+});
 
 module.exports = mongoose.model("User", userSchema)
